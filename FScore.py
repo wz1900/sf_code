@@ -1,3 +1,11 @@
+
+def active_error(gold, test):
+    res = 0 ;
+    for i in range(len(gold)):
+        if( gold[i] != test[i] ):
+            res = res + 1 ;
+    return res ;
+
 class FScore:
   "Compute F1-Score based on gold set and test set."
 

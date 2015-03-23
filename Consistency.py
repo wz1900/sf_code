@@ -9,24 +9,21 @@ def Consistency(G, labels):
     for edge in G.edges():
         myMatrix[int(edge[0]), int(edge[1])] = beta ;
         myMatrix[int(edge[1]), int(edge[0])] = beta ;
-    print myMatrix ;
 
     tMatrix = np.zeros((n, n)) ;
     mysum = myMatrix.sum(axis=1) ;
     for i in range(n):
         tMatrix[i, i] = mysum[i] ; 
 
-    print tMatrix ;
     #temp = np.exp(tMatrix, 1.0/2) ;
     temp = tMatrix**(1.0/2) ;
 
-    print temp ;
     temp = np.linalg.inv(temp) ;
-    print temp ;
 
     S = np.dot(np.dot(temp, myMatrix), temp) ;
     F = np.dot(np.linalg.inv(np.eye(n)-0.5*S), labels) ;
     print F ;
+    return F ;
 
 def read_label(filename):
     labels = [] ;
@@ -37,6 +34,7 @@ def read_label(filename):
 
     return labels ;
 
+'''
 file_name = "../dataset/test_edges.txt" ;
 G = nx.read_edgelist(file_name) ;
 
@@ -45,3 +43,4 @@ labels = read_label(label_file) ;
 labels = np.array(labels) ;
 
 Consistency(G, labels) ;
+'''

@@ -1,9 +1,16 @@
 
-def active_error(gold, test):
+def active_error(G, gold_infect, test_infect):
+    #print gold_infect ;
+    #print test_infect ;
+    gold_infect_dict = {} ;
+    test_infect_dict = {} ;
+    for temp in gold_infect: gold_infect_dict[temp] = True ;
+    for temp in test_infect: test_infect_dict[temp] = True ;
     res = 0 ;
-    for i in range(len(gold)):
-        if( gold[i] != test[i] ):
-            res = res + 1 ;
+    for node in G.nodes():
+        if( gold_infect_dict.has_key(node) and test_infect_dict.has_key(node) ): continue ;
+        if( gold_infect_dict.has_key(node) is False and test_infect_dict.has_key(node) is False ): continue ;
+        res = res + 1 ;
     return res ;
 
 class FScore:

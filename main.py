@@ -7,6 +7,8 @@ from LabelPropagation import label_propagation ;
 from SeeFinder import find_local_max, find_local_max_neighbors ;
 from FScore import  FScore, active_error ;
 
+beta = 0.2 ;
+
 def set_node_label(G, infect_list):
     infect_dict = {} ;
     for node in infect_list:
@@ -21,21 +23,21 @@ def set_node_label(G, infect_list):
 
 def run_consistency(G, labels):
     labels = np.array(labels) ;
-    res = Consistency(G, labels) ;
+    res = Consistency(G, labels, beta) ;
     return res ;
 
 def run_label_propagation(G, labels, run_num):
     return label_propagation(G, labels, run_num) ;
 
 def run_propagation(G, seed_num):
-    propagation = Propagation(G) ;
+    propagation = Propagation(G, beta) ;
     seeds = propagation.choice_seeds(seed_num) ;
     infected_list = propagation.infect_by_rate(seeds) ;
     #infected_list = propagation.infect_by_step(seeds, 0) ;
     return [seeds, infected_list] ; 
 
 def test_active_error(G, test_seeds, gold_infect_list):
-    propagation = Propagation(G) ;
+    propagation = Propagation(G, beta) ;
     test_infect_list = propagation.infect_by_rate(test_seeds) ; 
     res = active_error(G, gold_infect_list, test_infect_list) ;
     return res ;

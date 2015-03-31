@@ -2,8 +2,8 @@ import random ;
 import networkx as nx ;
 
 class Propagation:
-    def __init__(self, graph):
-        self.beta = 0.5 ;
+    def __init__(self, graph, beta):
+        self.beta = beta ;
         self.graph = graph ;
         self.max_step_num = 3 ;
         self.max_infect_rate = 0.3 ;

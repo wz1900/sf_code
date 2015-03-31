@@ -3,11 +3,34 @@ import numpy as np ;
 from math import sqrt ;
 import time ;
 
-def laplace_normalize(G):
+def si_normalize(G):
     #print "-----get laplace normalize matrix-------"
     n = G.number_of_nodes() ;
     myMatrix = np.zeros((n, n)) ;
     beta = 0.5 ;
+    
+    tMatrix = np.zeros((n, n)) ;
+    for edge in G.edges():
+        myMatrix[int(edge[0]), int(edge[1])] = beta ;
+        myMatrix[int(edge[1]), int(edge[0])] = beta ;
+
+        tMatrix[int(edge[0]), int(edge[0])] += beta ;
+        tMatrix[int(edge[1]), int(edge[1])] += beta ;
+    #print myMatrix ;
+    S = np.zeros((n,n)) ;
+    for edge in G.edges():
+        i = int(edge[0]) ;
+        j = int(edge[1]) ;
+        S[i,j] = myMatrix[i,j]/((tMatrix[i,i])*(tMatrix[j,j]))  ;
+        S[j,i] = S[i,j] ;
+    #print S ;
+    return S ;
+
+
+def laplace_normalize(G, beta):
+    #print "-----get laplace normalize matrix-------"
+    n = G.number_of_nodes() ;
+    myMatrix = np.zeros((n, n)) ;
     
     tMatrix = np.zeros((n, n)) ;
     for edge in G.edges():
@@ -39,9 +62,9 @@ def laplace_normalize(G):
     #print S ;
     return S ;
 
-def Consistency(G, labels):
+def Consistency(G, labels, beta):
     n = G.number_of_nodes() ;
-    S = laplace_normalize(G) ;
+    S = laplace_normalize(G, beta) ;
     #print "------laplace is calculated-------" ;
     F = np.dot(np.linalg.inv(np.eye(n)-0.5*S), labels) ;
     #print F ;

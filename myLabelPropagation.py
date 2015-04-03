@@ -2,10 +2,9 @@ import networkx as nx ;
 from Consistency import laplace_normalize ;
 from Consistency import read_label ;
 
-def get_trans_matrix(G):
+def get_trans_matrix(G, beta):
     n = G.number_of_nodes() ;
     myMatrix = np.zeros((n, n)) ;
-    beta = 0.5 ;
     for edge in G.edges():
         myMatrix[int(edge[0]), int(edge[1])] = beta ;
         myMatrix[int(edge[1]), int(edge[0])] = beta ;

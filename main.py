@@ -7,7 +7,7 @@ from LabelPropagation import label_propagation ;
 from SeeFinder import find_local_max, find_local_max_neighbors ;
 from FScore import  FScore, active_error ;
 
-beta = 0.2 ;
+beta = 0.5 ;
 
 def set_node_label(G, infect_list):
     infect_dict = {} ;
@@ -43,7 +43,8 @@ def test_active_error(G, test_seeds, gold_infect_list):
     return res ;
 
 def run_test():
-    file_name = "../dataset/facebook_combined.txt" ;
+    #file_name = "../dataset/facebook_combined.txt" ;
+    file_name = "../dataset/CA-GrQc_nor.txt" ;
     #file_name = "../dataset/test_edges.txt" ;
     G = nx.read_edgelist(file_name) ;
     print "------propagation-------"
@@ -51,32 +52,42 @@ def run_test():
     print "gold_seeds:", gold_seeds ;
     
     print "------set label-------"
-    labels = set_node_label(G, gold_infected_list) ;
+    original_labels = set_node_label(G, gold_infected_list) ;
     #print labels ;
 
     print "------consistency-------"
-    labels = run_consistency(G, labels) ;
+    labels = run_consistency(G, original_labels) ;
  
     #print "------label pro---------"
     #labels = run_label_propagation(G, labels, 100) ;
     
     #print labels;
-    seeds = find_local_max(G, labels) ;
+    seeds = find_local_max(G, labels, original_labels) ;
+    for seed in gold_seeds:
+        print seed, labels[int(seed)] ;
+        print "-----neigbhors------"
+        for temp in G.neighbors(seed):
+            print temp, labels[int(temp)] ;
+    print " " ;
+
     print seeds ;
-    max_neighbors = find_local_max_neighbors(G, labels, seeds) ;
-    print max_neighbors ;
+    for temp in seeds:
+        print labels[int(temp)], ;
+    print " " ;
+    #max_neighbors = find_local_max_neighbors(G, labels, seeds) ;
+    #print max_neighbors ;
 
     fscore = FScore() ;
-    fscore.increment(set(gold_seeds), set(seeds+max_neighbors)) ;
+    fscore.increment(set(gold_seeds), set(seeds)) ;
     print "precision:", fscore.precision();
     print "recall:", fscore.recall() ;
     print "fscore:", fscore.fscore() ;
-    active_error = test_active_error(G, set(seeds+max_neighbors), gold_infected_list) ;
+    active_error = test_active_error(G, set(seeds), gold_infected_list) ;
     print "active_error", active_error ;
 if __name__ == "__main__":
     import time ;
     start = time.clock()
-    for i in range(20):
+    for i in range(100):
         run_test() ;
     elapsed = (time.clock() - start)
     print("Time used:",elapsed)

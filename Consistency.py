@@ -63,11 +63,13 @@ def laplace_normalize(G, beta):
     return S ;
 
 def Consistency(G, labels, beta):
+    alpha = 0.5 ;
     n = G.number_of_nodes() ;
     S = laplace_normalize(G, beta) ;
     #print "------laplace is calculated-------" ;
-    F = np.dot(np.linalg.inv(np.eye(n)-0.5*S), labels) ;
+    F = np.dot(np.linalg.inv(np.eye(n) - alpha*S), labels) ;
     #print F ;
+    print "##geting F##"
     return F ;
 
 def read_label(filename):

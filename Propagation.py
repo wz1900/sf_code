@@ -33,7 +33,7 @@ class Propagation:
             neighbors = self.graph.neighbors(seed) ;
             for neighbor in neighbors:
                 if( self.count_rate() > self.max_infect_rate ): 
-                    print "seeds number:", len(self.infect_dict) ;
+                    print "active nodes number:", len(self.infect_dict) ;
                     print self.count_rate() ;
                     return self.get_all_seeds() ;
 

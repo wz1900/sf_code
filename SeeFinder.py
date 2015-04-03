@@ -2,13 +2,15 @@ import networkx as nx ;
 import numpy as np ;
 from Consistency import Consistency, read_label ;
 
-def find_local_max(G, labels):
+def find_local_max(G, labels, original_labels):
+    tole = 0.001 ;
     seeds = [] ;
     for node in G.nodes():
+        if( original_labels[int(node)] < 0 ): continue ;
         temp = 0 ;
         for neighbor in G.neighbors(node):
-            if( labels[int(node)] > labels[int(neighbor)] ): temp = temp + 1 ;
-        if(temp == len(G.neighbors(node)) and labels[int(node)]>0): seeds.append(node) ;
+            if( labels[int(node)] > labels[int(neighbor)]+tole ): temp = temp + 1 ;
+        if(temp == len(G.neighbors(node)) ): seeds.append(node) ;
         #if(temp == len(G.neighbors(node)) ): seeds.append(node) ;
     return seeds ;
 

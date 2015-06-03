@@ -2,11 +2,11 @@ import random ;
 import networkx as nx ;
 
 class Propagation:
-    def __init__(self, graph, beta):
+    def __init__(self, graph, beta, max_infect_rate):
         self.beta = beta ;
         self.graph = graph ;
         self.max_step_num = 3 ;
-        self.max_infect_rate = 0.3 ;
+        self.max_infect_rate = max_infect_rate ;
         self.infect_dict = {} ;
 
     def choice_seeds(self, num):

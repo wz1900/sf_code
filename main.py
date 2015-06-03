@@ -8,6 +8,7 @@ from SeeFinder import find_local_max, find_local_max_neighbors ;
 from FScore import  FScore, active_error ;
 
 beta = 0.5 ;
+max_infect_rate = 0.5 ;
 
 def set_node_label(G, infect_list):
     infect_dict = {} ;
@@ -30,25 +31,26 @@ def run_label_propagation(G, labels, run_num):
     return label_propagation(G, labels, run_num) ;
 
 def run_propagation(G, seed_num):
-    propagation = Propagation(G, beta) ;
+    propagation = Propagation(G, beta, max_infect_rate) ;
     seeds = propagation.choice_seeds(seed_num) ;
     infected_list = propagation.infect_by_rate(seeds) ;
     #infected_list = propagation.infect_by_step(seeds, 0) ;
     return [seeds, infected_list] ; 
 
 def test_active_error(G, test_seeds, gold_infect_list):
-    propagation = Propagation(G, beta) ;
+    propagation = Propagation(G, beta, max_infect_rate) ;
     test_infect_list = propagation.infect_by_rate(test_seeds) ; 
     res = active_error(G, gold_infect_list, test_infect_list) ;
     return res ;
 
 def run_test():
     #file_name = "../dataset/facebook_combined.txt" ;
-    file_name = "../dataset/CA-GrQc_nor.txt" ;
+    #file_name = "../dataset/CA-GrQc_nor.txt" ;
+    file_name = "../dataset/karate.txt" ;
     #file_name = "../dataset/test_edges.txt" ;
     G = nx.read_edgelist(file_name) ;
     print "------propagation-------"
-    [gold_seeds, gold_infected_list] = run_propagation(G, seed_num=10) ;
+    [gold_seeds, gold_infected_list] = run_propagation(G, seed_num=3) ;
     print "gold_seeds:", gold_seeds ;
     
     print "------set label-------"
@@ -87,7 +89,7 @@ def run_test():
 if __name__ == "__main__":
     import time ;
     start = time.clock()
-    for i in range(100):
+    for i in range(50):
         run_test() ;
     elapsed = (time.clock() - start)
     print("Time used:",elapsed)

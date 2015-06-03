@@ -40,18 +40,6 @@ def laplace_normalize(G, beta):
         tMatrix[int(edge[0]), int(edge[0])] += beta ;
         tMatrix[int(edge[1]), int(edge[1])] += beta ;
     #print myMatrix ;
-    '''
-    # this is ok, but too time cost
-    mysum = myMatrix.sum(axis=1) ;
-    for i in range(n):
-        tMatrix[i, i] = mysum[i] ;
-    print tMatrix ;
-
-    temp = tMatrix**(1.0/2) ;
-    temp = np.linalg.inv(temp) ;
-    S = np.dot(np.dot(temp, myMatrix), temp) ;
-    '''
-
     # a faster one
     S = np.zeros((n,n)) ;
     for edge in G.edges():
@@ -61,6 +49,36 @@ def laplace_normalize(G, beta):
         S[j,i] = S[i,j] ;
     #print S ;
     return S ;
+
+def direct_laplace_normalize(G, beta):
+    #print "-----get laplace normalize matrix-------"
+    n = G.number_of_nodes() ;
+    myMatrix = np.zeros((n, n)) ;
+    
+    tMatrix = np.zeros((n, n)) ;
+    for edge in G.edges():
+        start = int(edge[0]) ;
+        end = int(edge[1]) ;
+        myMatrix[end, start] = beta ;
+        #tMatrix[int(end, end] += beta ;
+    # print myMatrix ;
+    # a faster one
+
+    S = np.zeros((n,n)) ;
+    for edge in G.edges():
+        i = int(edge[0]) ;
+        j = int(edge[1]) ;
+        S[i,j] = myMatrix[i,j]/(sqrt(tMatrix[i,i])*sqrt(tMatrix[j,j]))  ;
+    #print S ;
+    return S ;
+
+def Consistency(G, labels, beta):
+    alpha = 0.5 ;
+    n = G.number_of_nodes() ;
+    S = laplace_normalize(G, beta) ;
+    #print "------laplace is calculated-------" ;
+    F = np.dot(np.linalg.inv(np.eye(n) - alpha*S), labels) ;
+    #print F ;
 
 def Consistency(G, labels, beta):
     alpha = 0.5 ;

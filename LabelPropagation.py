@@ -4,7 +4,7 @@ from Consistency import read_label ;
 
 def label_propagation(G, Y, run_num=10):
     print "-----getting laplace------"
-    #S = laplace_normalize(G) ;
+    S = laplace_normalize(G, beta=0.5) ;
     #S = si_normalize(G) ;
     print "-----laplace has been calculated------"
     labels = Y[:] ;

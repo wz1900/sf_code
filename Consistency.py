@@ -50,6 +50,7 @@ def laplace_normalize(G, beta):
     #print S ;
     return S ;
 
+# not used
 def direct_laplace_normalize(G, beta):
     #print "-----get laplace normalize matrix-------"
     n = G.number_of_nodes() ;
@@ -71,7 +72,7 @@ def direct_laplace_normalize(G, beta):
         S[i,j] = myMatrix[i,j]/(sqrt(tMatrix[i,i])*sqrt(tMatrix[j,j]))  ;
     #print S ;
     return S ;
-
+'''
 def Consistency(G, labels, beta):
     alpha = 0.5 ;
     n = G.number_of_nodes() ;
@@ -79,11 +80,13 @@ def Consistency(G, labels, beta):
     #print "------laplace is calculated-------" ;
     F = np.dot(np.linalg.inv(np.eye(n) - alpha*S), labels) ;
     #print F ;
+'''
 
 def Consistency(G, labels, beta):
     alpha = 0.5 ;
     n = G.number_of_nodes() ;
     S = laplace_normalize(G, beta) ;
+    #print S ;
     #print "------laplace is calculated-------" ;
     F = np.dot(np.linalg.inv(np.eye(n) - alpha*S), labels) ;
     #print F ;
@@ -98,6 +101,7 @@ def read_label(filename):
         labels.append(float(mylist[1])) ;
 
     return labels ;
+
 if __name__ == "__main__":
     file_name = "../dataset/test_edges.txt" ;
     G = nx.read_edgelist(file_name) ;
@@ -107,7 +111,7 @@ if __name__ == "__main__":
     labels = np.array(labels) ;
 
     start = time.time()
-    for i in range(1000):
-        Consistency(G, labels) ;
+    for i in range(1):
+        Consistency(G, labels, 0.5) ;
     end = time.time()
     print "run time: ", end-start

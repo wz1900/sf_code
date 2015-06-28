@@ -1,6 +1,6 @@
 import random ;
 import networkx as nx ;
-
+from SeedFinder import seed_select_unconnected ;
 class Propagation:
     def __init__(self, graph, beta, max_infect_rate):
         self.beta = beta ;
@@ -10,6 +10,7 @@ class Propagation:
         self.infect_dict = {} ;
 
     def choice_seeds(self, num):
+        #seeds = seed_select_unconnected(self.graph, num) ;
         seeds = random.sample(self.graph.nodes(), num) ;
         for seed in seeds:
             self.infect_dict[seed] = True ;
@@ -27,14 +28,14 @@ class Propagation:
         return seeds ;
 
     def infect_by_rate(self, seeds):
-        print "----infect once-----"
-        print self.count_rate() ;
+        #print "----infect once-----"
+        #print self.count_rate() ;
         for seed in seeds:
             neighbors = self.graph.neighbors(seed) ;
             for neighbor in neighbors:
                 if( self.count_rate() > self.max_infect_rate ): 
-                    print "active nodes number:", len(self.infect_dict) ;
-                    print self.count_rate() ;
+                    #print "active nodes number:", len(self.infect_dict) ;
+                    #print self.count_rate() ;
                     return self.get_all_seeds() ;
 
                 if( self.infect_dict.has_key(neighbor) is False ):

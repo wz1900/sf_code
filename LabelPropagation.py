@@ -1,5 +1,5 @@
 import networkx as nx ;
-from Consistency import laplace_normalize, si_normalize ;
+from Consistency import laplace_normalize ;
 from Consistency import read_label ;
 
 def label_propagation(G, Y, run_num=10):

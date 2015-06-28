@@ -7,10 +7,11 @@ from LabelPropagation import label_propagation ;
 from SeedFinder import find_local_max, find_local_max_neighbors, neighbor_infect_rate, find_local_max_rules, seed_clean;
 from FScore import  FScore, active_error ;
 
-beta = 0.9 ;
-max_infect_rate = 0.5 ;
-seed_num = 5 ;
-
+beta = 0 ;
+max_infect_rate = 0.3 ;
+seed_num = -1 ;
+temp_result_files = ["orig_est_seeds.txt", "r1_est_seeds.txt", "r2_est_seeds.txt", "r1r2_est_seeds.txt"] ;
+output_file = "result.txt" ;
 def set_node_label(G, infect_list):
     infect_dict = {} ;
     for node in infect_list:
@@ -45,9 +46,9 @@ def test_active_error(G, test_seeds, gold_infect_list):
     return res ;
 
 def run_test():
-    #file_name = "../dataset/facebook_combined.txt" ;
+    file_name = "../dataset/facebook_combined.txt" ;
     #file_name = "../dataset/CA-GrQc_nor.txt" ;
-    file_name = "../dataset/karate.txt" ;
+    #file_name = "../dataset/karate.txt" ;
     #file_name = "../dataset/test_edges.txt" ;
     G = nx.read_edgelist(file_name) ;
     print "------propagation-------"
@@ -119,13 +120,47 @@ def write_result(fscore, destfile, seed_len):
     print >>f, "length:", seed_len ;
     #active_error = test_active_error(G, set(seeds), gold_infected_list) ;
     #print "active_error", active_error ;
-    f.close() ; 
+    f.close() ;
+ 
+def my_run(set_beta, set_seed_num, run_num):
+    import os ;
+    from Estimate import get_score ;
+    global beta ;
+    beta = set_beta ;
+    global seed_num ;
+    seed_num = set_seed_num ;
+    for i in range(run_num):
+        print "------------------", i , "-------------------"
+        run_test() ;
+
+    f = open(output_file, 'a') ;
+    for temp_file in temp_result_files:
+        res = get_score(temp_file, seed_num) ;
+        print >> f, temp_file, ":", res ; 
+        os.remove(temp_file) ;
+    f.close() ;
 
 if __name__ == "__main__":
     import time ;
     start = time.clock()
-    for i in range(1000):
-        print "------------------", i , "-------------------"
-        run_test() ;
+    betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
+    seedList = [5, 10, 15] ;
+    run_num = 500 ;
+    f = open(output_file, 'w') ;  
+    f.close() ;
+    for beta in betaList:
+        f = open(output_file, 'a') ;  
+        print >> f, "----------------beta=", beta, "------------------" ;
+        print  "----------------beta=", beta, "------------------" ;
+        f.close() ;
+        for seed in seedList:
+            f = open(output_file, 'a') ;  
+            print >> f, "***** seed_num=", seed, "*****" ;
+            f.close() ;
+            print "***** seed_num=", seed, "*****" ;
+            my_run(beta, seed, run_num) ;
+        f = open(output_file, 'a') ;  
+        print >> f, "\n" ;
+        f.close() ;
     elapsed = (time.clock() - start)
     print("Time used:",elapsed)

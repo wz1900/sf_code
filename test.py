@@ -1,6 +1,6 @@
+seed_num = 5 ;
 num = 0 ;
-#filename = "nohup.out" ;
-filename = "new_est_seeds.txt" ;
+filename = "orig_est_seeds.txt" ;
 precision_list = [] ;
 recall_list = [] ;
 fscore_list = [] ;
@@ -34,4 +34,12 @@ for line in open(filename).readlines():
 print "-----------average-----------"
 print sum(precision_list)/float(len(precision_list)) , sum(recall_list)/float(len(recall_list)), sum(fscore_list)/float(len(fscore_list)) ;
 
-print "\n".join(length_list) ;
+#print "\n".join(length_list) ;
+ok_num1 = 0 ;
+ok_num2 = 0 ;
+for temp in length_list:
+    if( int(temp)  == seed_num ): ok_num1 = ok_num1 + 1 ;
+    if( int(temp)>=seed_num*0.8 and int(temp)<=seed_num*1.2 ): ok_num2 = ok_num2+1 ;
+
+print ok_num1/(len(length_list)*1.0),
+print ok_num2/(len(length_list)*1.0) ;

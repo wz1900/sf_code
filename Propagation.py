@@ -27,13 +27,14 @@ class Propagation:
             seeds.append(temp) ;
         return seeds ;
 
-    def infect_by_rate(self, seeds):
+    def infect_by_rate(self, seeds, step):
         #print "----infect once-----"
         #print self.count_rate() ;
+        step = step + 1 ;
         for seed in seeds:
             neighbors = self.graph.neighbors(seed) ;
             for neighbor in neighbors:
-                if( self.count_rate() > self.max_infect_rate ): 
+                if( self.count_rate() > self.max_infect_rate or step>99 ): 
                     #print "active nodes number:", len(self.infect_dict) ;
                     #print self.count_rate() ;
                     return self.get_all_seeds() ;
@@ -43,7 +44,7 @@ class Propagation:
                         self.infect_dict[neighbor] = True ;
         
         seeds = self.get_all_seeds() ;
-        return self.infect_by_rate(seeds) ;
+        return self.infect_by_rate(seeds, step) ;
 
 
     def infect_by_step(self, seeds, step):

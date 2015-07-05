@@ -35,21 +35,23 @@ def run_label_propagation(G, labels, run_num):
 def run_propagation(G, seed_num):
     propagation = Propagation(G, beta, max_infect_rate) ;
     seeds = propagation.choice_seeds(seed_num) ;
-    infected_list = propagation.infect_by_rate(seeds) ;
+    infected_list = propagation.infect_by_rate(seeds, 0) ;
     #infected_list = propagation.infect_by_step(seeds, 0) ;
     return [seeds, infected_list] ; 
 
 def test_active_error(G, test_seeds, gold_infect_list):
     propagation = Propagation(G, beta, max_infect_rate) ;
-    test_infect_list = propagation.infect_by_rate(test_seeds) ; 
+    test_infect_list = propagation.infect_by_rate(test_seeds, 0) ; 
     res = active_error(G, gold_infect_list, test_infect_list) ;
     return res ;
 
 def run_test():
-    file_name = "../dataset/facebook_combined.txt" ;
+    #file_name = "../dataset/facebook_combined.txt" ;
     #file_name = "../dataset/CA-GrQc_nor.txt" ;
     #file_name = "../dataset/karate.txt" ;
-    #file_name = "../dataset/test_edges.txt" ;
+    #file_name = "../dataset/friendships-hamster_new.txt" ;
+    #file_name = "../dataset/hamster_full_new.txt" ;
+    file_name = "../dataset/blog_edges.txt" ;
     G = nx.read_edgelist(file_name) ;
     print "------propagation-------"
     [gold_seeds, gold_infected_list] = run_propagation(G, seed_num) ;
@@ -129,6 +131,10 @@ def my_run(set_beta, set_seed_num, run_num):
     beta = set_beta ;
     global seed_num ;
     seed_num = set_seed_num ;
+
+    for temp_file in temp_result_files:
+        os.remove(temp_file) if os.path.exists(temp_file) else None
+
     for i in range(run_num):
         print "------------------", i , "-------------------"
         run_test() ;
@@ -143,9 +149,10 @@ def my_run(set_beta, set_seed_num, run_num):
 if __name__ == "__main__":
     import time ;
     start = time.clock()
-    betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
-    seedList = [5, 10, 15] ;
-    run_num = 500 ;
+    #betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
+    betaList = [0.1] ;
+    seedList = [3,5,10] ;
+    run_num = 10 ;
     f = open(output_file, 'w') ;  
     f.close() ;
     for beta in betaList:

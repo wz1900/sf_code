@@ -47,7 +47,7 @@ def get_min_neighbor_rate(G, seeds, original_labels):
     res = [] ;
     for seed in seeds:
         seed_infect_rate = neighbor_infect_rate(G, seed, original_labels) ;
-        print "Seed: %s, infect_rate: %f", seed, seed_infect_rate ;
+        #print "Seed: %s, infect_rate: %f", seed, seed_infect_rate ;
         res.append( seed_infect_rate ) ;
     temp = 0.8 * np.mean(res) ;
     return temp ;
@@ -78,13 +78,33 @@ def find_local_max_with_infect(G, seed, labels, original_labels, checktype, min_
                 seed_id = neighbor ;
 
     if( checktype=='r2' or checktype=='r1r2' ):
-        #print "-------rule 2-----------" 
+        #print "-------rule 2-----------"
+        ''' 
         if( seed_infect_rate !=0 and seed_infect_rate<=min_neigh_rate ): 
             return None ;
         else:
             return seed_id ;
+        '''
+        neighbor_dict = {} ;
+        neighbor_dict[seed_id] = 1 ;
+        for neighbor in G.neighbors(seed_id):
+            neighbor_dict[neighbor] = 1 ;
+
+        myset = set() ;
+        for neighbor in G.neighbors(seed_id):
+            for temp in G.neighbors(neighbor):
+                if( neighbor_dict.has_key(temp) is False  and original_labels[int(temp)] >0 ): myset.add(temp) ;
+
+        num = 0 ;
+        for temp in myset:
+            if( checktype=='r2' and labels[int(seed_id)] > labels[int(temp)] ): num = num + 1 ;
+            if( checktype=='r1r2' and labels[int(seed_id)]*neighbor_infect_rate(G, seed_id, original_labels) > labels[int(temp)]*neighbor_infect_rate(G, temp, original_labels) ): num = num + 1 ;
+
+        if( num >= 0.95*len(myset) ): return seed_id ; 
+        else: return None ; 
 
     return seed_id ;
+
 
 def find_local_max_rules(G, seeds, labels, original_labels, average_rate, checktype=None):
     if( checktype is None ): return find_local_max(G, labels, original_labels) ;

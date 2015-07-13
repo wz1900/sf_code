@@ -29,7 +29,7 @@ def get_score(filename, seed_num):
         if line[0]=='[': print len(mylist), ;
         if( mylist[0].strip() == 'length:' ): 
             print mylist[1] ;
-            length_list.append(mylist[1]) ;
+            length_list.append(int(mylist[1])) ;
     #print num ;
     print "-----------average-----------"
     [precision, recall, fscore]= [sum(precision_list)/float(len(precision_list)) , sum(recall_list)/float(len(recall_list)), sum(fscore_list)/float(len(fscore_list))] ;
@@ -43,7 +43,7 @@ def get_score(filename, seed_num):
 
     [rate0, rate2] = [ok_num1/(len(length_list)*1.0), ok_num2/(len(length_list)*1.0)] ;
 
-    return [precision, recall, fscore, rate0, rate2] ;
+    return [precision, recall, fscore, rate0, rate2, sum(length_list)/float(len(length_list)) ] ;
 if __name__ == "__main__":
     import time ;
     seed_num = 5 ;

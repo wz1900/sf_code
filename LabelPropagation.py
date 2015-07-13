@@ -2,11 +2,12 @@ import networkx as nx ;
 from Consistency import laplace_normalize ;
 from Consistency import read_label ;
 
-def label_propagation(G, Y, run_num=10):
-    print "-----getting laplace------"
-    S = laplace_normalize(G, beta=0.5) ;
+def label_propagation(G, Y, run_num=10, S=None):
+    #print "-----getting laplace------"
+    if( S is None ):
+        S = laplace_normalize(G, beta=0.5) ;
     #S = si_normalize(G) ;
-    print "-----laplace has been calculated------"
+    #print "-----laplace has been calculated------"
     labels = Y[:] ;
     for i in range(run_num):
         #print "------label pro once--------"

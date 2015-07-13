@@ -2,7 +2,7 @@ import numpy as np ;
 import networkx as nx ;
 
 from Propagation import Propagation ;
-from Consistency import Consistency ;
+from Consistency import Consistency, laplace_normalize ;
 from LabelPropagation import label_propagation ;
 from SeedFinder import find_local_max, find_local_max_neighbors, neighbor_infect_rate, find_local_max_rules, seed_clean;
 from FScore import  FScore, active_error ;
@@ -29,8 +29,8 @@ def run_consistency(G, labels):
     res = Consistency(G, labels, beta) ;
     return res ;
 
-def run_label_propagation(G, labels, run_num):
-    return label_propagation(G, labels, run_num) ;
+def run_label_propagation(G, labels, run_num, nor_matrix):
+    return label_propagation(G, labels, run_num, nor_matrix) ;
 
 def run_propagation(G, seed_num):
     propagation = Propagation(G, beta, max_infect_rate) ;
@@ -45,14 +45,7 @@ def test_active_error(G, test_seeds, gold_infect_list):
     res = active_error(G, gold_infect_list, test_infect_list) ;
     return res ;
 
-def run_test():
-    #file_name = "../dataset/facebook_combined.txt" ;
-    #file_name = "../dataset/CA-GrQc_nor.txt" ;
-    #file_name = "../dataset/karate.txt" ;
-    #file_name = "../dataset/friendships-hamster_new.txt" ;
-    #file_name = "../dataset/hamster_full_new.txt" ;
-    file_name = "../dataset/blog_edges.txt" ;
-    G = nx.read_edgelist(file_name) ;
+def run_test(G, nor_matrix=None):
     print "------propagation-------"
     [gold_seeds, gold_infected_list] = run_propagation(G, seed_num) ;
     print "gold_seeds:", gold_seeds ;
@@ -64,13 +57,13 @@ def run_test():
     #print "------consistency-------"
     #labels = run_consistency(G, original_labels) ;
     #print "------label pro---------"
-    labels = run_label_propagation(G, original_labels, 5) ;
+    labels = run_label_propagation(G, original_labels, 5, nor_matrix) ;
     
     #print labels;
     seeds = find_local_max(G, labels, original_labels) ;
     print "consistency seeds: ", seeds ;
-    seeds = seed_clean(G, seeds) ;
-    print "consistency seeds cleaned :", seeds, "\n" ;
+    #seeds = seed_clean(G, seeds) ;
+    #print "consistency seeds cleaned :", seeds, "\n" ;
     #if( )
     #new_seeds = find_local_max_with_infect(G, seeds, labels, original_labels) ;
     #print "with infect rate:", new_seeds, "\n" ;
@@ -124,7 +117,7 @@ def write_result(fscore, destfile, seed_len):
     #print "active_error", active_error ;
     f.close() ;
  
-def my_run(set_beta, set_seed_num, run_num):
+def my_run(G, set_beta, set_seed_num, run_num, nor_matrix=None):
     import os ;
     from Estimate import get_score ;
     global beta ;
@@ -137,7 +130,7 @@ def my_run(set_beta, set_seed_num, run_num):
 
     for i in range(run_num):
         print "------------------", i , "-------------------"
-        run_test() ;
+        run_test(G, nor_matrix) ;
 
     f = open(output_file, 'a') ;
     for temp_file in temp_result_files:
@@ -149,10 +142,20 @@ def my_run(set_beta, set_seed_num, run_num):
 if __name__ == "__main__":
     import time ;
     start = time.clock()
-    #betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
-    betaList = [0.1] ;
-    seedList = [3,5,10] ;
-    run_num = 10 ;
+
+    #file_name = "../dataset/facebook_combined.txt" ;
+    #file_name = "../dataset/CA-GrQc_nor.txt" ;
+    #file_name = "../dataset/karate.txt" ;
+    #file_name = "../dataset/friendships-hamster_new.txt" ;
+    #file_name = "../dataset/hamster_full_new.txt" ;
+    file_name = "../dataset/blog_edges.txt" ;
+    G = nx.read_edgelist(file_name) ;
+    nor_matrix = laplace_normalize(G, beta=1) ;
+    
+    betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
+    #betaList = [0.1, 0.3, 0.5] ;
+    seedList = [5] ;
+    run_num = 5 ;
     f = open(output_file, 'w') ;  
     f.close() ;
     for beta in betaList:
@@ -165,7 +168,7 @@ if __name__ == "__main__":
             print >> f, "***** seed_num=", seed, "*****" ;
             f.close() ;
             print "***** seed_num=", seed, "*****" ;
-            my_run(beta, seed, run_num) ;
+            my_run(G, beta, seed, run_num, nor_matrix) ;
         f = open(output_file, 'a') ;  
         print >> f, "\n" ;
         f.close() ;

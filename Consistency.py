@@ -28,7 +28,7 @@ def si_normalize(G):
 
 
 def laplace_normalize(G, beta):
-    #print "-----get laplace normalize matrix-------"
+    print "-----get laplace normalize matrix-------"
     n = G.number_of_nodes() ;
     myMatrix = np.zeros((n, n)) ;
     

@@ -10,7 +10,8 @@ from FScore import  FScore, active_error ;
 beta = 0 ;
 max_infect_rate = 0.3 ;
 seed_num = -1 ;
-temp_result_files = ["orig_est_seeds.txt", "r1_est_seeds.txt", "r2_est_seeds.txt", "r1r2_est_seeds.txt"] ;
+#temp_result_files = ["orig_est_seeds.txt", "r1_est_seeds.txt", "r2_est_seeds.txt", "r1r2_est_seeds.txt"] ;
+temp_result_files = ["orig_est_seeds.txt"] ;
 output_file = "result.txt" ;
 def set_node_label(G, infect_list):
     infect_dict = {} ;
@@ -67,7 +68,7 @@ def run_test(G, nor_matrix=None):
     #if( )
     #new_seeds = find_local_max_with_infect(G, seeds, labels, original_labels) ;
     #print "with infect rate:", new_seeds, "\n" ;
-
+    ''' 
     r1_seeds = find_local_max_rules(G, seeds, labels, original_labels, beta, checktype='r1') ;
     print "with r1:", r1_seeds, "\n" ;
 
@@ -83,18 +84,13 @@ def run_test(G, nor_matrix=None):
     print "000000 r1r2_seeds 00000"
     for seed in r1r2_seeds:
         print seed, labels[int(seed)], neighbor_infect_rate(G, seed, original_labels);
-        '''
-        print "-----neigbhors------"
-        for temp in G.neighbors(seed):
-            infect_rate = neighbor_infect_rate(G, temp, original_labels) ;
-            print temp, labels[int(temp)], infect_rate ;
-        print ""
-        '''
+    '''
 
     fscore = FScore() ;
     fscore.increment(set(gold_seeds), set(seeds)) ;
     write_result(fscore, "orig_est_seeds.txt", len(set(seeds))) ;
-
+    
+    '''
     r1_fscore = FScore() ;
     r1_fscore.increment(set(gold_seeds), set(r1_seeds)) ;
     write_result(r1_fscore, "r1_est_seeds.txt", len(set(r1_seeds))) ;
@@ -106,6 +102,7 @@ def run_test(G, nor_matrix=None):
     r1r2_fscore = FScore() ;
     r1r2_fscore.increment(set(gold_seeds), set(r1r2_seeds)) ;
     write_result(r1r2_fscore, "r1r2_est_seeds.txt", len(set(r1r2_seeds))) ;  
+    '''
 
 def write_result(fscore, destfile, seed_len):
     f = open(destfile,'a')
@@ -143,19 +140,21 @@ if __name__ == "__main__":
     import time ;
     start = time.clock()
 
-    #file_name = "../dataset/facebook_combined.txt" ;
+    file_name = "../dataset/facebook_combined.txt" ;
     #file_name = "../dataset/CA-GrQc_nor.txt" ;
     #file_name = "../dataset/karate.txt" ;
     #file_name = "../dataset/friendships-hamster_new.txt" ;
     #file_name = "../dataset/hamster_full_new.txt" ;
-    file_name = "../dataset/blog_edges.txt" ;
+    #file_name = "../dataset/blog_edges.txt" ;
+    #file_name = "../dataset/jazz_new.txt" ;
+
     G = nx.read_edgelist(file_name) ;
     nor_matrix = laplace_normalize(G, beta=1) ;
     
-    betaList = [0.1, 0.3, 0.5, 0.7, 0.9] ;
-    #betaList = [0.1, 0.3, 0.5] ;
-    seedList = [5] ;
-    run_num = 5 ;
+    betaList = [0.1] ;
+    #betaList = [0.7] ;
+    seedList = [3,5,10] ;
+    run_num = 500 ;
     f = open(output_file, 'w') ;  
     f.close() ;
     for beta in betaList:

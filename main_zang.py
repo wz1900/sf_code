@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     G = nx.read_edgelist(file_name) ;
 
-    seedList = [3,5,10] ;
+    seedList = [3] ;
     run_num = 200 ;
     f = open(output_file, 'w') ;  
     f.close() ;

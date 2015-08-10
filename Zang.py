@@ -1,7 +1,7 @@
 import networkx as nx ;
 import pprint
 import community ;
-import 
+from BasicFunction import igraph_get_community ; 
 
 
 from BasicFunction import build_sub_graph ;
@@ -68,22 +68,16 @@ class Zang:
 
     def _get_sources(self, useful_node_list):
         myGraph = build_sub_graph(self.G, useful_node_list) ;
-        partition = community.best_partition(myGraph) ;
+        nxg_list = igraph_get_community(myGraph.copy()) ;
         count = 0 ;
         sourcelist = [] ;
-        for com in set(partition.values()) :
+        for g in nxg_list :
             count = count + 1 ;
-            list_nodes = [nodes for nodes in partition.keys() if partition[nodes] == com] ;
-            tempG = build_sub_graph(self.G.copy(), list_nodes) ;
-            source = self.get_center(tempG) ;
+            source = self.get_center(g) ;
             sourcelist.append(source) ;
         print "community num:", count ; 
-        #print community.modularity(partition, myGraph) ;
         return sourcelist ;
 
-    def get_community(self):
-        tt = 0 ;
-        
 
     def get_sources(self, model="SIR"):
         total_list = list(self.infected_list) ;
